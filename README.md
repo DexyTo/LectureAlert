@@ -33,10 +33,22 @@
 git clone https://github.com/yourusername/LectureAlert.git
 cd LectureAlert
 
-# Устанавливаем бэкенд
-cd backend
+#Создаем виртуальное окружение и активируем его
+python -m venv venv
+venv\Sripts\activate
+
+# Устанавливаем зависимости для бота и backend-части
 pip install -r requirements.txt
 
-# Устанавливаем фронтенд (админ-панель)
-cd ../frontend
-npm install
+#Создаем файл .env с переменными окружения
+MODEUS_TOKEN=...
+BOT_TOKEN=..
+
+DB_HOST=...
+DB_PORT=...
+DB_USER=...
+DB_PASS=...
+DB_NAME=...
+
+# Запуск 
+python bot\src\main.py
