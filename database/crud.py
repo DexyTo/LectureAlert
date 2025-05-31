@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 from sqlalchemy import select, delete, and_
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .models import Student, Lecture
+from .models import Student, Lecture, StudentSchema
 from .config import async_session_factory
 
 
@@ -11,6 +11,15 @@ async def get_student(chat_id: int):
     async with async_session_factory() as session:
         result = await session.execute(select(Student).where(Student.chat_id == chat_id))
         return result.scalar_one_or_none()
+
+
+async def get_all_students() -> list[StudentSchema]:
+    async with async_session_factory() as session:
+        result = await session.execute(select(Student))
+        student_models = result.scalars().all()
+        student_schemas = [StudentSchema.model_validate(student_model.__dict__)
+                           for student_model in student_models]
+        return student_schemas
 
 
 async def get_active_students(session: AsyncSession) -> list[Student]:
@@ -103,7 +112,8 @@ async def get_upcoming_lectures(session: AsyncSession, hours_ahead: int = 24) ->
         .where(
             and_(
                 Lecture.is_sended == False,
-                Lecture.start_time.between(now, now + timedelta(hours=hours_ahead))
+                Lecture.start_time.between(
+                    now, now + timedelta(hours=hours_ahead))
             )
         )
         .execution_options(populate_existing=True)

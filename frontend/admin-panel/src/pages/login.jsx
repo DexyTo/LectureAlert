@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
+import Navbar from '../components/navbar';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -19,11 +20,7 @@ export default function Login() {
 
   return (
     <>
-      <div className='navbar mb-36 bg-blue-700 text-white'>
-        <div className='navbar-center mx-auto'>
-          <h1 className='text-3xl font-bold'>Lecture Alert</h1>
-        </div>
-      </div>
+      <Navbar />
 
       <form onSubmit={handleSubmit}>
         <fieldset className='fieldset mx-auto bg-base-200 border-base-300 rounded-box w-xs border p-4'>
@@ -49,7 +46,9 @@ export default function Login() {
             required
           />
 
-          <button className='btn btn-info text-white text-xl mt-4'>Войти</button>
+          <button className='btn btn-info text-white text-xl mt-4'>
+            Войти
+          </button>
         </fieldset>
       </form>
     </>

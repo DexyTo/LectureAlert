@@ -23,7 +23,6 @@ async def check_upcoming_lectures(bot: Bot):
                     if datetime.now() >= notification_time:
                         message_text = format_notification_text(lecture)
                         photo_path = get_photo_path(lecture.location)
-                        print(photo_path)
                         photo_exists = await aiofiles.os.path.exists(photo_path) if photo_path else False
 
                         if photo_path and photo_exists and student.is_sending_photo:

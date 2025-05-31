@@ -1,6 +1,16 @@
 from datetime import datetime
+from pydantic import BaseModel
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+
+class StudentSchema(BaseModel):
+    id: int
+    chat_id: int
+    full_name: str
+    notification_time: int
+    is_active: bool
+    is_sending_photo: bool
 
 
 class Base(DeclarativeBase):
@@ -35,3 +45,4 @@ class Lecture(Base):
     is_sended: Mapped[bool] = mapped_column(default=False, index=True)
 
     student: Mapped["Student"] = relationship(back_populates="lectures")
+
