@@ -1,18 +1,40 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import floorPlansData from '../data/floorsPlanData';
 
 import Navbar from '../components/navbar';
+import EditFloorModal from '../components/EditFloorModal';
 
 export default function InstitutionSchemas() {
   const { slug } = useParams();
-  const institution = floorPlansData[slug];
   const navigate = useNavigate();
+  const [editingFloor, setEditingFloor] = useState(null);
+  const institution = floorPlansData[slug];
+
+  const handleSaveImage = async (newImage) => {
+    const formData = new FormData();
+    formData.append('file', newImage);
+    formData.append('file_name', editingFloor.fileName);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/update-floor-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        navigate(0)
+      }
+    } catch (error) {
+      console.error('Ошибка при обновлении фото:', error);
+    }
+  };
 
   if (!institution) {
     return (
       <>
         <Navbar />
-        <div className='text-center'>
+        <div className='mt-14 text-center'>
           <h2 className='text-3xl font-bold text-error'>Институт не найден</h2>
           <button
             onClick={() => navigate('/institutions')}
@@ -28,7 +50,7 @@ export default function InstitutionSchemas() {
   return (
     <>
       <Navbar />
-      <div className='pb-6 px-6'>
+      <div className='mt-14 pb-6 px-6'>
         <h1 className='text-3xl font-bold mb-6'>
           Схемы этажей: {institution.title}
         </h1>
@@ -40,14 +62,19 @@ export default function InstitutionSchemas() {
                 <img
                   src={floor.image}
                   alt={`${institution.title} - ${floor.level}`}
-                  className='rounded-xl w-full object-cover'
+                  className='rounded-xl object-cover'
                 />
               </figure>
               <div className='card-body justify-center'>
                 <div className='flex justify-between'>
                   <h3 className='card-title'>{floor.level}</h3>
                   <div className='card-actions'>
-                    <button className='btn btn-primary'>Изменить</button>
+                    <button
+                      onClick={() => setEditingFloor(floor)}
+                      className='btn btn-primary'
+                    >
+                      Изменить
+                    </button>
                   </div>
                 </div>
               </div>
@@ -55,6 +82,14 @@ export default function InstitutionSchemas() {
           ))}
         </div>
       </div>
+
+      {editingFloor && (
+        <EditFloorModal
+          floor={editingFloor}
+          onClose={() => setEditingFloor(null)}
+          onSave={handleSaveImage}
+        />
+      )}
     </>
   );
 }

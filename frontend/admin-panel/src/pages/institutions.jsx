@@ -35,7 +35,7 @@ export default function Institutions() {
     <>
       <Navbar />
 
-      <div className='flex flex-wrap gap-7 justify-center pb-4 px-4'>
+      <div className='flex flex-wrap gap-7 justify-center mt-14 pb-4 px-4'>
         {institutions.map((institution) => (
           <div
             key={institution.slug}
